@@ -18,6 +18,7 @@
     expand-region
     geiser
     ac-geiser
+    exec-path-from-shell
 ))
 
 ;; Define keyboard bindings that I like
@@ -98,3 +99,6 @@
  (lambda (binding) (global-set-key (kbd (car binding)) (cadr binding)))
  user-requested-bindings)
 
+;; On OS X exec the shell so we get actual env variabls
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
