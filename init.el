@@ -16,7 +16,9 @@
     haskell-mode
     smartparens
     expand-region
-    ))
+    geiser
+    ac-geiser
+))
 
 ;; Define keyboard bindings that I like
 ;;;; C-C letter are owned by the user
