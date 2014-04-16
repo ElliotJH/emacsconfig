@@ -25,7 +25,7 @@
     go-mode
     powerline
     projectile
-;;    helm-projectile
+    helm-projectile
     go-autocomplete
     smart-tabs-mode
 ))
