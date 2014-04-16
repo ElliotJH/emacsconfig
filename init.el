@@ -28,6 +28,7 @@
     helm-projectile
     go-autocomplete
     smart-tabs-mode
+    company
 ))
 
 ;; Define keyboard bindings that I like
