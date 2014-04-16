@@ -5,7 +5,7 @@
 ;; Set a list of packages that I want
 (defvar user-requested-packages
   '(
-    helm 
+    helm
     solarized-theme
     auto-complete
     magit
@@ -24,6 +24,10 @@
     haskell-mode
     go-mode
     powerline
+    projectile
+;;    helm-projectile
+    go-autocomplete
+    smart-tabs-mode
 ))
 
 ;; Define keyboard bindings that I like
@@ -36,6 +40,8 @@
    ("C-c m" mc/edit-lines)
    ("C-c C-m" mc/edit-beginnings-of-lines)
    ("C-c i" find-user-init-file)
+   ("C-c p" helm-projectile)
+   ("C-c TAB" company-complete)
    ))
 
 (defvar user-requested-theme 'solarized-dark)
@@ -69,8 +75,9 @@
 (enable-theme user-requested-theme)
 
 ;; Autocomplete stuff
-(auto-complete)
-(global-auto-complete-mode)
+;; (auto-complete)
+;; (global-auto-complete-mode)
+(global-company-mode)
 (global-linum-mode)
 
 ;; Bells are pointless and annoying
@@ -118,7 +125,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes (quote ("f41fd682a3cd1e16796068a2ca96e82cfd274e58b978156da0acce4d56f2b0d5" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(haskell-mode-hook (quote (turn-on-eldoc-mode turn-on-haskell-decl-scan turn-on-haskell-doc turn-on-haskell-indent)) t)
+ '(indent-tabs-mode nil)
  '(inferior-lisp-program "clisp")
+ '(scheme-program-name "guile")
+ '(scss-compile-at-save nil)
  '(tramp-chunksize 200))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -147,3 +157,17 @@
 (setq visible-bell t)
 
 (powerline-default-theme)
+
+(dolist ($hook '(css-mode-hook scss-mode-hook))
+  (add-hook
+   $hook (lambda ()
+	   (local-set-key (kbd "C-c j") 'helm-css-scss))))
+
+(add-hook 'go-mode (lambda() (add-hook 'before-save-hook 'gofmt-before-save)))
+
+(setq c-basic-offset 4)
+(setq cperl-indent-level 4)
+(setq tab-width 4)
+
+(smart-tabs-mode)
+(visual-line-mode)
