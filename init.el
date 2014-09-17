@@ -1,9 +1,12 @@
 (package-initialize)
 
-(defvar user-requested-font "EspressoMono-Regular-12")
+(if (eq system-type 'windows-nt) 
+    (defconst user-requested-font "Consolas-10")
+  (defvar user-requested-font "EspressoMono-Regular-12"))
+
 
 ;; Set a list of packages that I want
-(defvar user-requested-packages
+(defconst user-requested-packages
   '(
     helm
     solarized-theme
@@ -29,12 +32,13 @@
     go-autocomplete
     smart-tabs-mode
     company
+    fold-dwim
 ))
 
 ;; Define keyboard bindings that I like
 ;;;; C-C letter are owned by the user
 ;; Function 5 to Function 9 are owned by the user
-(defvar user-requested-bindings
+(defconst user-requested-bindings
   '(
    ("C-c e" er/expand-region)
    ("C-c p" paredit-mode)
@@ -43,10 +47,13 @@
    ("C-c i" find-user-init-file)
    ("C-c p" helm-projectile)
    ("C-c TAB" company-complete)
+   ("C-x C-f" helm-find-files)
+   ("C-c s" helm-swoop)
+   ("C-c h" helm-mini)
    ))
 
-(defvar user-requested-theme 'solarized-dark)
-(defvar user-requested-autocomplete-tool 'helm)
+(defconst user-requested-theme 'solarized-dark)
+(defconst user-requested-autocomplete-tool 'helm)
 
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
@@ -60,7 +67,7 @@
 
 
 ;; Install user-requested-packages
-(mapc (lambda (package) (if (not (package-installed-p package))
+(mapcar (lambda (package) (if (not (package-installed-p package))
 			    (package-install package))) user-requested-packages)
 
 ;; Disable ugly shit
@@ -78,7 +85,7 @@
 ;; Autocomplete stuff
 ;; (auto-complete)
 ;; (global-auto-complete-mode)
-(global-company-mode)
+;;(global-company-mode)
 (global-linum-mode)
 
 ;; Bells are pointless and annoying
@@ -128,6 +135,8 @@
  '(haskell-mode-hook (quote (turn-on-eldoc-mode turn-on-haskell-decl-scan turn-on-haskell-doc turn-on-haskell-indent)) t)
  '(indent-tabs-mode nil)
  '(inferior-lisp-program "clisp")
+ '(magit-emacsclient-executable "C:/Users/e.hughes/Emacs/bin/emacsclient.exe")
+ '(magit-use-overlays nil)
  '(scheme-program-name "guile")
  '(scss-compile-at-save nil)
  '(tramp-chunksize 200))
@@ -172,3 +181,34 @@
 
 (smart-tabs-mode)
 (visual-line-mode)
+
+(setq default-directory "C:/Users/e.hughes/Code")
+(load-file "~/.emacs.d/pymacs.el")
+(require 'pymacs)
+(pymacs-load "ropemacs" "rope-")
+(setq company-idle-delay t)
+
+(setq comint-completion-addsuffix '("\\" "."))
+
+
+(defun
+  switch-color-theme ()
+  "Switch between dark-light solarized"
+  (interactive)
+  (if (null custom-enabled-themes)
+    (progn 
+      (load-theme 'solarized-dark)
+      (enable-theme 'solarized-dark))
+  (if (member 'solarized-dark custom-enabled-themes)
+      (progn 
+        (disable-theme 'solarized-dark)
+        (enable-theme 'solarized-light))
+    (if (member 'solarized-light custom-enabled-themes)
+        (progn 
+          (disable-theme 'solarized-light)
+          (enable-theme 'solarized-dark))
+      (progn 
+        (mapc 'disable-theme custom-enabled-themes)
+        (enable-theme 'solarized-dark))))))
+
+
