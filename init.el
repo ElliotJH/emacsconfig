@@ -33,6 +33,10 @@
     smart-tabs-mode
     company
     fold-dwim
+    expand-region
+    wrap-region
+    multiple-cursors
+    ace-jump-mode
 ))
 
 ;; Define keyboard bindings that I like
@@ -50,6 +54,9 @@
    ("C-x C-f" helm-find-files)
    ("C-c s" helm-swoop)
    ("C-c h" helm-mini)
+   ("<f2> w" ace-jump-word-mode)
+   ("<f2> l" ace-jump-line-mode)
+   ("<f2> c" ace-jump-char-mode)
    ))
 
 (defconst user-requested-theme 'solarized-dark)
@@ -212,3 +219,14 @@
         (enable-theme 'solarized-dark))))))
 
 
+(put 'narrow-to-region 'disabled nil)
+(setq org-agenda-files "~/.agenda.orgmode")
+
+
+(defvar org-map-menu (make-sparse-keymap "Org Mode"))
+(define-key org-map-menu (kbd "s") 'org-store-link)
+(define-key org-map-menu (kbd "c") 'org-capture)
+(define-key org-map-menu (kbd "a") 'org-agenda)
+(define-key org-map-menu (kbd "b") 'org-iswitchb)
+(global-set-key (kbd "C-c o") org-map-menu)
+(global-company-mode)
