@@ -37,6 +37,7 @@
     wrap-region
     multiple-cursors
     ace-jump-mode
+    org-plus-contrib
 ))
 
 ;; Define keyboard bindings that I like
@@ -62,8 +63,8 @@
 (defconst user-requested-theme 'solarized-dark)
 (defconst user-requested-autocomplete-tool 'helm)
 
-(add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 (let
     ((themes '(
@@ -132,7 +133,7 @@
 
 
 ;; Set Fonts
-(set-face-attribute 'default nil :font user-requested-font)
+(ignore-errors (set-face-attribute 'default nil :font user-requested-font))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -190,10 +191,10 @@
 (visual-line-mode)
 
 (setq default-directory "C:/Users/e.hughes/Code")
-(load-file "~/.emacs.d/pymacs.el")
-(require 'pymacs)
-(pymacs-load "ropemacs" "rope-")
-(setq company-idle-delay t)
+;;(load-file "~/.emacs.d/pymacs.el")
+;;(require 'pymacs)
+;;(pymacs-load "ropemacs" "rope-")
+(setq company-idle-delay 0)
 
 (setq comint-completion-addsuffix '("\\" "."))
 
@@ -224,9 +225,9 @@
 
 
 (defvar org-map-menu (make-sparse-keymap "Org Mode"))
-(define-key org-map-menu (kbd "s") 'org-store-link)
-(define-key org-map-menu (kbd "c") 'org-capture)
-(define-key org-map-menu (kbd "a") 'org-agenda)
-(define-key org-map-menu (kbd "b") 'org-iswitchb)
+(define-key org-map-menu (kbd "s") '(menu-item "Store Link" org-store-link :help "Store a link"))
+(define-key org-map-menu (kbd "c") '(menu-item "Capture" org-capture :help "Capture something"))
+(define-key org-map-menu (kbd "a") '(menu-item "Agenda" org-agenda :help "Open agenda menu"))
+(define-key org-map-menu (kbd "b") '(menu-item "Buffer switch" org-iswitchb :help "Switch to org buffer"))
+
 (global-set-key (kbd "C-c o") org-map-menu)
-(global-company-mode)
