@@ -1,9 +1,8 @@
 (package-initialize)
 
 (if (eq system-type 'windows-nt) 
-    (defconst user-requested-font "Consolas-10")
+    (defconst user-requested-font "Consolas-11")
   (defvar user-requested-font "EspressoMono-Regular-12"))
-
 
 ;; Set a list of packages that I want
 (defconst user-requested-packages
@@ -38,6 +37,8 @@
     multiple-cursors
     ace-jump-mode
     org-plus-contrib
+    autopair
+    ace-window
 ))
 
 ;; Define keyboard bindings that I like
@@ -58,9 +59,10 @@
    ("<f2> w" ace-jump-word-mode)
    ("<f2> l" ace-jump-line-mode)
    ("<f2> c" ace-jump-char-mode)
+   ("C-c w" ace-window)
    ))
 
-(defconst user-requested-theme 'solarized-dark)
+(defconst user-requested-theme 'sanityinc-tomorrow-bright)
 (defconst user-requested-autocomplete-tool 'helm)
 
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
@@ -87,7 +89,7 @@
 ;;Define other modes here...
 
 ;; Set the theme
-(load-theme user-requested-theme)
+(load-theme user-requested-theme t)
 (enable-theme user-requested-theme)
 
 ;; Autocomplete stuff
@@ -112,9 +114,6 @@
 (set-variable 'magit-emacsclient-executable "/usr/local/bin/emacsclient")
 
 ;; Setup bindings
-;; (electric-indent-mode 1)
-(electric-pair-mode 1)
-(setq electric-pair-preserve-balance 1)
 
 (defun
   find-user-init-file ()
@@ -133,21 +132,40 @@
 
 
 ;; Set Fonts
-(ignore-errors (set-face-attribute 'default nil :font user-requested-font))
+(set-face-attribute 'default nil :font user-requested-font)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("f41fd682a3cd1e16796068a2ca96e82cfd274e58b978156da0acce4d56f2b0d5" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(compilation-message-face (quote default))
+ '(cua-global-mark-cursor-color "#2aa198")
+ '(cua-normal-cursor-color "#657b83")
+ '(cua-overwrite-cursor-color "#b58900")
+ '(cua-read-only-cursor-color "#859900")
+ '(custom-safe-themes (quote ("1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "e53cc4144192bb4e4ed10a3fa3e7442cae4c3d231df8822f6c02f1220a0d259a" "1affe85e8ae2667fb571fc8331e1e12840746dae5c46112d5abb0c3a973f5f5a" "f41fd682a3cd1e16796068a2ca96e82cfd274e58b978156da0acce4d56f2b0d5" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(fci-rule-color "#eee8d5")
  '(haskell-mode-hook (quote (turn-on-eldoc-mode turn-on-haskell-decl-scan turn-on-haskell-doc turn-on-haskell-indent)) t)
+ '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(highlight-symbol-colors (--map (solarized-color-blend it "#fdf6e3" 0.25) (quote ("#b58900" "#2aa198" "#dc322f" "#6c71c4" "#859900" "#cb4b16" "#268bd2"))))
+ '(highlight-symbol-foreground-color "#586e75")
+ '(highlight-tail-colors (quote (("#eee8d5" . 0) ("#B4C342" . 20) ("#69CABF" . 30) ("#69B7F0" . 50) ("#DEB542" . 60) ("#F2804F" . 70) ("#F771AC" . 85) ("#eee8d5" . 100))))
  '(indent-tabs-mode nil)
  '(inferior-lisp-program "clisp")
- '(magit-emacsclient-executable "C:/Users/e.hughes/Emacs/bin/emacsclient.exe")
+ '(magit-diff-use-overlays nil)
+ '(magit-emacsclient-executable "C:/Users/e.hughes/Emacs/bin/emacsclient.exe" t)
  '(magit-use-overlays nil)
+ '(python-shell-interpreter "python")
  '(scheme-program-name "guile")
  '(scss-compile-at-save nil)
- '(tramp-chunksize 200))
+ '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
+ '(term-default-bg-color "#fdf6e3")
+ '(term-default-fg-color "#657b83")
+ '(tramp-chunksize 200)
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map (quote ((20 . "#dc322f") (40 . "#c85d17") (60 . "#be730b") (80 . "#b58900") (100 . "#a58e00") (120 . "#9d9100") (140 . "#959300") (160 . "#8d9600") (180 . "#859900") (200 . "#669b32") (220 . "#579d4c") (240 . "#489e65") (260 . "#399f7e") (280 . "#2aa198") (300 . "#2898af") (320 . "#2793ba") (340 . "#268fc6") (360 . "#268bd2"))))
+ '(vc-annotate-very-old-color nil)
+ '(weechat-color-list (quote (unspecified "#fdf6e3" "#eee8d5" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#657b83" "#839496"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -171,6 +189,7 @@
 ;; Don't use messages that you don't read
 (setq initial-scratch-message "")
 (setq inhibit-startup-message t)
+(setq initial-buffer-choice "c:\\Users\\e.hughes\\Code\\projects.org")
 ;; Don't let Emacs hurt your ears
 (setq visible-bell t)
 
@@ -191,9 +210,11 @@
 (visual-line-mode)
 
 (setq default-directory "C:/Users/e.hughes/Code")
-;;(load-file "~/.emacs.d/pymacs.el")
-;;(require 'pymacs)
-;;(pymacs-load "ropemacs" "rope-")
+(defun start-pymacs ()
+  (interactive)
+  (load-file "~/.emacs.d/pymacs.el")
+  (require 'pymacs)
+  (pymacs-load "ropemacs" "rope-"))
 (setq company-idle-delay 0)
 
 (setq comint-completion-addsuffix '("\\" "."))
@@ -231,3 +252,19 @@
 (define-key org-map-menu (kbd "b") '(menu-item "Buffer switch" org-iswitchb :help "Switch to org buffer"))
 
 (global-set-key (kbd "C-c o") org-map-menu)
+
+(add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin/")
+(setq ispell-program-name "aspell")
+(setq ispell-personal-dictionary "~/.ispell")
+
+(remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+(electric-indent-mode 1)
+(add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
+(setq display-time-24hr-format t)
+(setq display-time-day-and-date t)
+(display-time)
+(autopair-mode 1)
+
+(if (and (fboundp 'server-running-p)
+         (not (server-running-p)))
+    (server-start))
