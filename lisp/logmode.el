@@ -13,8 +13,6 @@
   (let ((split (split-string cand sym)))
     (lambda (n) (elt split n))))
 
-((logmode/split "hello_world_person" "_") 2)
-
 ((lambda (n) (+ 1 n)) 2)
 
 (defun logmode/transform (cand) (let
@@ -37,4 +35,5 @@
   (interactive)
   (helm :sources  '((name . "Simulation Logs")
                     (candidates . logmode/list-log-items)
-                    (action ("Open" . (lambda (candidate) (find-file-read-only candidate)))))))
+                    (action ("Open" . (lambda (candidate) (find-file-read-only candidate)))
+                            ("Delete" . (lambda (candidate) (delete-file candidate)))))))

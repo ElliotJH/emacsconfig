@@ -37,8 +37,11 @@
     multiple-cursors
     ace-jump-mode
     org-plus-contrib
-    autopair
     ace-window
+    jedi
+    god-mode
+    key-chord
+    smartparens
 ))
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
@@ -52,7 +55,6 @@
    ("C-c e" er/expand-region)
    ("C-c p" paredit-mode)
    ("C-c m" mc/edit-lines)
-   ("C-c C-m" mc/edit-beginnings-of-lines)
    ("C-c i" find-user-init-file)
    ("C-c p" helm-projectile)
    ("C-c TAB" company-complete)
@@ -64,16 +66,23 @@
    ("<f2> c" ace-jump-char-mode)
    ("C-c w" ace-window)
    ("C-c SPC" helm-resume)
-   ("C-c C-r" revert-buffer)
+   ("C-c r" revert-buffer)
    ("C-c l" logmode/helm)
+   ("<escape>" god-local-mode)
+   ("C-S-f", sp-forward-slurp-sexp)
+   ("C-S-b", sp-forward-barf-sexp)
    ))
+
+(require 'smartparens-config)
+(turn-on-smartparens-mode)
+(turn-on-show-smartparens-mode)
 
 ;; Apply user requested bindings
 (mapc
  (lambda (binding) (global-set-key (kbd (car binding)) (cadr binding)))
  user-requested-bindings)
 
-(defconst user-requested-theme 'sanityinc-tomorrow-bright)
+(defconst user-requested-theme 'atom-dark)
 (defconst user-requested-autocomplete-tool 'helm)
 
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
@@ -150,6 +159,8 @@
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
    (vector "#eaeaea" "#d54e53" "#b9ca4a" "#e7c547" "#7aa6da" "#c397d8" "#70c0b1" "#000000"))
+ '(ansi-term-color-vector
+   [unspecified "#1d1f21" "#CC342B" "#198844" "#FBA922" "#3971ED" "#A36AC7" "#3971ED" "#c5c8c6"] t)
  '(compilation-message-face (quote default))
  '(cua-global-mark-cursor-color "#2aa198")
  '(cua-normal-cursor-color "#657b83")
@@ -158,7 +169,7 @@
  '(custom-enabled-themes (quote (sanityinc-tomorrow-bright)))
  '(custom-safe-themes
    (quote
-    ("dd1c2037ef66ee3f706bf687ccdb75fd7511bcc11d00fdb35d0535d80beb8b0a" "eb26ba64aa8e3726cb01b9de1a2f33647d4e0d6c8e36686d43a64d1cd76b7df1" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "e53cc4144192bb4e4ed10a3fa3e7442cae4c3d231df8822f6c02f1220a0d259a" "1affe85e8ae2667fb571fc8331e1e12840746dae5c46112d5abb0c3a973f5f5a" "f41fd682a3cd1e16796068a2ca96e82cfd274e58b978156da0acce4d56f2b0d5" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+    ("293907f71094d7a1ecf5bcb366bf32c2af0df5f9f607ffb3cab14d1ae3a4262a" "154400194a1843a22063914137c5f1ffce55f3ac369bf26589ae61d42a4540f4" "aba5822b8386905fd32f90edbb839995ea9cfa280d270e085b10e1f2ae145835" "dc42b54f7344d149c2429dad105aa89ed49dfe93c109ee7bd734cca1178ceb48" "dd1c2037ef66ee3f706bf687ccdb75fd7511bcc11d00fdb35d0535d80beb8b0a" "eb26ba64aa8e3726cb01b9de1a2f33647d4e0d6c8e36686d43a64d1cd76b7df1" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "e53cc4144192bb4e4ed10a3fa3e7442cae4c3d231df8822f6c02f1220a0d259a" "1affe85e8ae2667fb571fc8331e1e12840746dae5c46112d5abb0c3a973f5f5a" "f41fd682a3cd1e16796068a2ca96e82cfd274e58b978156da0acce4d56f2b0d5" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(custom-theme-load-path
    (quote
     ("c:/Users/e.hughes/AppData/Roaming/.emacs.d/elpa/color-theme-sanityinc-tomorrow-20140906.332/" "c:/Users/e.hughes/AppData/Roaming/.emacs.d/elpa/solarized-theme-20141004.2115/" custom-theme-directory "h:/Code/base16-builder/output/emacs" t)))
@@ -166,6 +177,7 @@
  '(haskell-mode-hook
    (quote
     (turn-on-eldoc-mode turn-on-haskell-decl-scan turn-on-haskell-doc turn-on-haskell-indent)) t)
+ '(helm-candidate-number-limit nil)
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-symbol-colors
    (--map
@@ -183,13 +195,29 @@
      ("#F2804F" . 70)
      ("#F771AC" . 85)
      ("#eee8d5" . 100))))
+ '(hl-bg-colors
+   (quote
+    ("#7B6000" "#8B2C02" "#990A1B" "#93115C" "#3F4D91" "#00629D" "#00736F" "#546E00")))
+ '(hl-fg-colors
+   (quote
+    ("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36")))
  '(indent-tabs-mode nil)
  '(inferior-lisp-program "clisp")
+ '(jedi:complete-on-dot t)
  '(magit-diff-use-overlays nil)
- '(magit-emacsclient-executable "C:/Users/e.hughes/Emacs/bin/emacsclient.exe")
+ '(magit-emacsclient-executable "C:/Users/e.hughes/Emacs/bin/emacsclient.exe" t)
  '(magit-git-executable "c:/Users/e.hughes/AppData/Local/Programs/Git/bin/git")
  '(magit-use-overlays nil)
+ '(org-babel-load-languages (quote ((emacs-lisp . t) (python . t) (haskell . t))))
+ '(org-catch-invisible-edits (quote show))
+ '(org-confirm-babel-evaluate nil)
+ '(org-default-notes-file "~\\tasks.org")
+ '(org-list-allow-alphabetical t)
+ '(org-modules
+   (quote
+    (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m org-jira)))
  '(python-shell-interpreter "python")
+ '(revert-without-query (quote ("*+.log")))
  '(scheme-program-name "guile")
  '(scss-compile-at-save nil)
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
@@ -246,7 +274,7 @@
 ;; Don't use messages that you don't read
 (setq initial-scratch-message "")
 (setq inhibit-startup-message t)
-(setq initial-buffer-choice "c:\\Users\\e.hughes\\Code\\projects.org")
+(setq initial-buffer-choice "~\\tasks.org")
 ;; Don't let Emacs hurt your ears
 (setq visible-bell t)
 
@@ -266,7 +294,7 @@
 (smart-tabs-mode)
 (visual-line-mode)
 
-(setq default-directory "C:/Users/e.hughes/Code")
+(setq default-directory "H:/Code/")
 (defun start-pymacs ()
   (interactive)
   (load-file "~/.emacs.d/pymacs.el")
@@ -320,9 +348,13 @@
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
 (display-time)
-(autopair-mode 1)
 
 (if (and (fboundp 'server-running-p)
          (not (server-running-p)))
     (server-start))
 
+;;(setq jedi:server-args '())
+
+;;(add-hook 'python-mode-hook 'jedi:setup)
+
+(server-start)
