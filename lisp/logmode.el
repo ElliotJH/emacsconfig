@@ -37,3 +37,10 @@
                     (candidates . logmode/list-log-items)
                     (action ("Open" . (lambda (candidate) (find-file-read-only candidate)))
                             ("Delete" . (lambda (candidate) (delete-file candidate)))))))
+
+(defun logmode/is-a-log (name)
+  (string-match ".log$" name))
+
+(defun logmode/kill-log-buffers ()
+  (interactive)
+  (mapcar (lambda (buffer) (if (logmode/is-a-log (buffer-name buffer)) (kill-buffer buffer))) (buffer-list)))

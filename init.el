@@ -1,6 +1,6 @@
 (package-initialize)
 
-(if (eq system-type 'windows-nt) 
+(if (eq system-type 'windows-nt)
     (defconst user-requested-font "Consolas-11")
   (defvar user-requested-font "EspressoMono-Regular-12"))
 
@@ -42,36 +42,71 @@
     god-mode
     key-chord
     smartparens
-))
+    hydra
+    ))
+
+(powerline-default-theme)
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'logmode)
+
+(defhydra hydra-mc (:color blue)
+  "mark"
+  ("r" mc/mark-all-in-region-regexp "mark regexp")
+  ("a" mc/mark-all-in-region "mark string")
+  ("s" mc/mark-all-symbols-like-this "mark all symbols like this"))
+
+(defhydra hydra-org-map-menu (:color blue)
+  "Org:"
+  ("t" find-user-tasks-file "open tasks file")
+  ("s" org-store-link  "Store Link")
+  ("c" org-capture  "Capture")
+  ("a" org-agenda  "Agenda")
+  ("b" org-iswitchb "Buffer Switch"))
+
+
+(defhydra hydra-ace-jump (:color blue)
+  "ace jump"
+  ("w" ace-jump-word-mode "jump to word")
+  ("l" ace-jump-line-mode "jump to line")
+  ("c" ace-jump-char-mode "jump to char")
+  ("o" ace-window "jump to window"))
 
 ;; Define keyboard bindings that I like
 ;;;; C-C letter are owned by the user
 ;; Function 5 to Function 9 are owned by the user
 (defconst user-requested-bindings
   '(
-   ("C-c e" er/expand-region)
-   ("C-c p" paredit-mode)
-   ("C-c m" mc/edit-lines)
-   ("C-c i" find-user-init-file)
-   ("C-c p" helm-projectile)
-   ("C-c TAB" company-complete)
-   ("C-x C-f" helm-find-files)
-   ("C-c s" helm-swoop)
-   ("C-c h" helm-mini)
-   ("<f2> w" ace-jump-word-mode)
-   ("<f2> l" ace-jump-line-mode)
-   ("<f2> c" ace-jump-char-mode)
-   ("C-c w" ace-window)
-   ("C-c SPC" helm-resume)
-   ("C-c r" revert-buffer)
-   ("C-c l" logmode/helm)
-   ("<escape>" god-local-mode)
-   ("C-S-f", sp-forward-slurp-sexp)
-   ("C-S-b", sp-forward-barf-sexp)
-   ))
+    ("C-c m" hydra-mc/body)
+    ("C-c e" er/expand-region)
+    ("C-c p" paredit-mode)
+    ("C-c i" find-user-init-file)
+    ("C-c t" find-user-tasks-file)
+    ("C-c p" helm-projectile)
+    ("C-c TAB" company-complete)
+    ("C-x C-f" helm-find-files)
+    ("C-c s" helm-swoop)
+    ("C-c h" helm-mini)
+    ("<f2>" hydra-ace-jump/body)
+    ("C-c j" hydra-ace-jump/body)
+    ("C-c SPC" helm-resume)
+    ("C-c r" revert-buffer)
+    ("C-c l" logmode/helm)
+    ("C-S-f" sp-forward-slurp-sexp)
+    ("C-S-b" sp-forward-barf-sexp)
+    ("C-c v" mc/edit-lines)
+    ("C-c f" iedit-mode)
+    ("C-c o" hydra-org-map-menu/body)
+    ))
+
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-c v") #'mc/edit-lines)
+
+(setq
+ helm-M-x-fuzzy-match t
+ helm-buffers-fuzzy-matching t
+ helm-recentf-fuzzy-match    t)
+
 
 (require 'smartparens-config)
 (turn-on-smartparens-mode)
@@ -141,6 +176,12 @@
   (interactive)
   (find-file user-init-file))
 
+(defun find-user-tasks-file ()
+  "Edit the tasks file"
+  (interactive)
+  (find-file "~/tasks.org"))
+
+
 
 
 ;; On OS X exec the shell so we get actual env variabls
@@ -161,23 +202,30 @@
    (vector "#eaeaea" "#d54e53" "#b9ca4a" "#e7c547" "#7aa6da" "#c397d8" "#70c0b1" "#000000"))
  '(ansi-term-color-vector
    [unspecified "#1d1f21" "#CC342B" "#198844" "#FBA922" "#3971ED" "#A36AC7" "#3971ED" "#c5c8c6"] t)
+ '(bookmark-save-flag 0)
  '(compilation-message-face (quote default))
+ '(compilation-read-command nil)
  '(cua-global-mark-cursor-color "#2aa198")
  '(cua-normal-cursor-color "#657b83")
  '(cua-overwrite-cursor-color "#b58900")
  '(cua-read-only-cursor-color "#859900")
- '(custom-enabled-themes (quote (sanityinc-tomorrow-bright)))
  '(custom-safe-themes
    (quote
-    ("293907f71094d7a1ecf5bcb366bf32c2af0df5f9f607ffb3cab14d1ae3a4262a" "154400194a1843a22063914137c5f1ffce55f3ac369bf26589ae61d42a4540f4" "aba5822b8386905fd32f90edbb839995ea9cfa280d270e085b10e1f2ae145835" "dc42b54f7344d149c2429dad105aa89ed49dfe93c109ee7bd734cca1178ceb48" "dd1c2037ef66ee3f706bf687ccdb75fd7511bcc11d00fdb35d0535d80beb8b0a" "eb26ba64aa8e3726cb01b9de1a2f33647d4e0d6c8e36686d43a64d1cd76b7df1" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "e53cc4144192bb4e4ed10a3fa3e7442cae4c3d231df8822f6c02f1220a0d259a" "1affe85e8ae2667fb571fc8331e1e12840746dae5c46112d5abb0c3a973f5f5a" "f41fd682a3cd1e16796068a2ca96e82cfd274e58b978156da0acce4d56f2b0d5" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+    ("ee86f1325d42dd1ac16db6b0e2c2b22f36caf06c3313940332d64b271fcfbeb9" "293907f71094d7a1ecf5bcb366bf32c2af0df5f9f607ffb3cab14d1ae3a4262a" "154400194a1843a22063914137c5f1ffce55f3ac369bf26589ae61d42a4540f4" "aba5822b8386905fd32f90edbb839995ea9cfa280d270e085b10e1f2ae145835" "dc42b54f7344d149c2429dad105aa89ed49dfe93c109ee7bd734cca1178ceb48" "dd1c2037ef66ee3f706bf687ccdb75fd7511bcc11d00fdb35d0535d80beb8b0a" "eb26ba64aa8e3726cb01b9de1a2f33647d4e0d6c8e36686d43a64d1cd76b7df1" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "e53cc4144192bb4e4ed10a3fa3e7442cae4c3d231df8822f6c02f1220a0d259a" "1affe85e8ae2667fb571fc8331e1e12840746dae5c46112d5abb0c3a973f5f5a" "f41fd682a3cd1e16796068a2ca96e82cfd274e58b978156da0acce4d56f2b0d5" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(custom-theme-load-path
    (quote
     ("c:/Users/e.hughes/AppData/Roaming/.emacs.d/elpa/color-theme-sanityinc-tomorrow-20140906.332/" "c:/Users/e.hughes/AppData/Roaming/.emacs.d/elpa/solarized-theme-20141004.2115/" custom-theme-directory "h:/Code/base16-builder/output/emacs" t)))
  '(fci-rule-color "#eee8d5")
+ '(flycheck-display-errors-delay 0.1)
+ '(flycheck-idle-change-delay 0.2)
  '(haskell-mode-hook
    (quote
     (turn-on-eldoc-mode turn-on-haskell-decl-scan turn-on-haskell-doc turn-on-haskell-indent)) t)
+ '(helm-adaptive-mode t nil (helm-adaptive))
+ '(helm-autoresize-mode t)
  '(helm-candidate-number-limit nil)
+ '(helm-ff-skip-boring-files t)
+ '(helm-locate-command "Everything %s %s")
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-symbol-colors
    (--map
@@ -204,19 +252,28 @@
  '(indent-tabs-mode nil)
  '(inferior-lisp-program "clisp")
  '(jedi:complete-on-dot t)
+ '(large-file-warning-threshold 100000000)
+ '(line-move-visual nil)
  '(magit-diff-use-overlays nil)
- '(magit-emacsclient-executable "C:/Users/e.hughes/Emacs/bin/emacsclient.exe" t)
+ '(magit-emacsclient-executable "C:/Users/e.hughes/Emacs/bin/emacsclient.exe")
  '(magit-git-executable "c:/Users/e.hughes/AppData/Local/Programs/Git/bin/git")
  '(magit-use-overlays nil)
  '(org-babel-load-languages (quote ((emacs-lisp . t) (python . t) (haskell . t))))
  '(org-catch-invisible-edits (quote show))
  '(org-confirm-babel-evaluate nil)
  '(org-default-notes-file "~\\tasks.org")
+ '(org-hide-emphasis-markers t)
+ '(org-html-doctype "html5")
+ '(org-html-head
+   "<link rel=\"stylesheet\" type=\"text/css\" href=\"file:///H:/orgmode.css\"/>")
+ '(org-html-html5-fancy t)
+ '(org-image-actual-width 300)
  '(org-list-allow-alphabetical t)
  '(org-modules
    (quote
     (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m org-jira)))
- '(python-shell-interpreter "python")
+ '(org-refile-targets (quote ((org-agenda-files :maxlevel . 100))))
+ '(python-shell-interpreter "ipython")
  '(revert-without-query (quote ("*+.log")))
  '(scheme-program-name "guile")
  '(scss-compile-at-save nil)
@@ -310,18 +367,18 @@
   "Switch between dark-light solarized"
   (interactive)
   (if (null custom-enabled-themes)
-    (progn 
+    (progn
       (load-theme 'solarized-dark)
       (enable-theme 'solarized-dark))
   (if (member 'solarized-dark custom-enabled-themes)
-      (progn 
+      (progn
         (disable-theme 'solarized-dark)
         (enable-theme 'solarized-light))
     (if (member 'solarized-light custom-enabled-themes)
-        (progn 
+        (progn
           (disable-theme 'solarized-light)
           (enable-theme 'solarized-dark))
-      (progn 
+      (progn
         (mapc 'disable-theme custom-enabled-themes)
         (enable-theme 'solarized-dark))))))
 
@@ -330,13 +387,7 @@
 (setq org-agenda-files "~/.agenda.orgmode")
 
 
-(defvar org-map-menu (make-sparse-keymap "Org Mode"))
-(define-key org-map-menu (kbd "s") '(menu-item "Store Link" org-store-link :help "Store a link"))
-(define-key org-map-menu (kbd "c") '(menu-item "Capture" org-capture :help "Capture something"))
-(define-key org-map-menu (kbd "a") '(menu-item "Agenda" org-agenda :help "Open agenda menu"))
-(define-key org-map-menu (kbd "b") '(menu-item "Buffer switch" org-iswitchb :help "Switch to org buffer"))
 
-(global-set-key (kbd "C-c o") org-map-menu)
 
 (add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin/")
 (setq ispell-program-name "aspell")
@@ -358,3 +409,19 @@
 ;;(add-hook 'python-mode-hook 'jedi:setup)
 
 (server-start)
+
+;;http://www.johndcook.com/blog/2015/02/01/rare-bigrams/
+(key-chord-define-global "sj" 'save-buffer)
+(key-chord-define-global "bf" 'beginning-of-buffer)
+(key-chord-define-global "xs" 'end-of-buffer)
+
+(key-chord-mode 1)
+
+(require 'midnight)
+(setq clean-buffer-list-delay-general 1)
+(midnight-delay-set 'midnight-delay "0:01am")
+(load-file "~/.emacs.d/macros.el")
+(load-file "~/.emacs.d/hooks.el")
+(put 'upcase-region 'disabled nil)
+
+(define-generic-mode sim-mode '() '("+" "-" "*" "/" "^" ">" "ge" "<" "le" ">=" "geq" "<=" "leq" "==" "eq" "!=" "<>" "neq" "&&" "and" "||" "or" "!" "not" "true" "false" "if" "lazy_if" "eval_if" "on" "try_except " "exception" "abs_max" "abs_min" "PI" "qNaN" "abs" "acos" "acosh" "asin" "asinh" "atan" "atanh" "ceiling" "cos" "cosh" "delta" "exp" "floor" "int" "integral" "interpolated" "started" "isQNaN" "iteration" "lag" "ln" "log" "log10" "max" "min" "mod" "normsdist" "osc" "prev" "lazy_if" "product" "qf" "sign" "sin" "sinh" "sosc" "sqrt" "sum" "tan" "tanh" "volatility" "weightedemavol" "avg" "ema" "emCor" "emCovar" "emLinest" "emaCovar" "emVol" "emZ" "expWgtMav" "expWgtMavCo" "expWgtNormMavCo" "mavg" "mmin" "mmax" "globalmax" "globalmin" "percentile" "percentrank" "stdema" "median" "top" "top_percent" "variance" "day_of_year" "total_days" "second" "minute" "hour" "day" "month" "year" "weekday" "time" "date" "rand_exponential" "rand_lognormal" "rand_normal" "rand_uniform" "rand_uniform_int" "seed") '(("\@[a-z0-9]+" . font-lock-variable-name-face)) '("\\.cfds\\'") '())
